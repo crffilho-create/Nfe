@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Remetente</title>
+</head>
+<body>
+  <h1>Cadastro de Remetente</h1>
+  <form id="formRemetente">
+    <label>Nome:</label><br>
+    <input type="text" name="nome" required><br><br>
+
+    <label>CNPJ:</label><br>
+    <input type="text" name="cnpj" required><br><br>
+
+    <label>Endereço:</label><br>
+    <input type="text" name="endereco" required><br><br>
+
+    <label>Município:</label><br>
+    <input type="text" name="municipio" required><br><br>
+
+    <label>UF:</label><br>
+    <input type="text" name="uf" maxlength="2" required><br><br>
+
+    <button type="submit">Salvar</button>
+  </form>
+
+  <script>
+    document.getElementById('formRemetente').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        nome: form.nome.value,
+        cnpj: form.cnpj.value,
+        endereco: form.endereco.value,
+        municipio: form.municipio.value,
+        uf: form.uf.value
+      };
+
+      const res = await fetch('/api/remetente', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        alert('Remetente salvo com sucesso!');
+        form.reset();
+      } else {
+        alert('Erro ao salvar remetente');
+      }
+    });
+  </script>
+</body>
+</html>
