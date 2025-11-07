@@ -1,0 +1,49 @@
+// ✅ Modelo de dados Remetente
+const Remetente = mongoose.model('Remetente', {
+  nome: {
+    type: String,
+    required: true
+  },
+  cnpj: {
+    type: String,
+    required: true
+  },
+  endereco: {
+    type: String,
+    required: true
+  },
+  municipio: {
+    type: String,
+    required: true
+  },
+  uf: {
+    type: String,
+    required: true,
+    maxlength: 2
+  }
+});
+
+// ✅ Modelo de dados Destinatário
+const Destinatario = mongoose.model('Destinatario', {
+  nome: {
+    type: String,
+    required: true
+  },
+  cnpjorcpf: {
+    type: String,
+    required: true
+  },
+  endereco: {
+    type: String,
+    required: true
+  },
+  municipio: {
+    type: String,
+    required: true
+  },
+  uf: {
+    type: String,
+    required: true,
+    maxlength: 2
+  }
+});

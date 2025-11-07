@@ -49,6 +49,32 @@ const Remetente = mongoose.model('Remetente', {
   }
 });
 
+
+// ✅ Modelo de dados Destinatario
+const Destinatario = mongoose.model('Destinatario', {
+  nome: {
+    type: String,
+    required: true
+  },
+  cnpjorcpf: {
+    type: String,
+    required: true
+  },
+  endereco: {
+    type: String,
+    required: true
+  },
+  municipio: {
+    type: String,
+    required: true
+  },
+  uf: {
+    type: String,
+    required: true,
+    maxlength: 2
+  }
+});
+
 // Rota para salvar recibo
 app.post('/api/recibo', async (req, res) => {
   try {
@@ -82,6 +108,31 @@ app.get('/api/remetentes', async (req, res) => {
 });
 
 
+// Rota para salvar destinatário
+app.post('/api/destinatario', async (req, res) => {
+  try {
+    console.log('📨 Dados recebidos do formulário:', req.body); // log útil
+    const novoDestinatario = new Destinatario(req.body);
+    await novoDestinatario.save();
+    res.status(201).send('Destinatário salvo com sucesso!');
+  } catch (err) {
+    console.error('❌ Erro ao salvar destinatário:', err.message); // mostra o erro real
+    res.status(500).send('Erro ao salvar destinatário');
+  }
+});;
+
+
+// Rota para listar destinatários
+app.get('/api/destinatarios', async (req, res) => {
+  try {
+    const destinatarios = await Destinatario.find();
+    res.status(200).json(destinatarios);
+  } catch (err) {
+    res.status(500).send('Erro ao buscar destinatários');
+  }
+});
+
+
 //Servir o HTML pelo Express
 const path = require('path');
 
@@ -89,6 +140,9 @@ app.get('/remetente', (req, res) => {
   res.sendFile(path.join(__dirname, 'remetente.html'));
 });
 
+app.get('/destinatario', (req, res) => {
+  res.sendFile(path.join(__dirname, 'destinatario.html'));
+});
 
 // Rota de teste
 app.get('/', (req, res) => {

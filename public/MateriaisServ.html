@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Materiais</title>
+</head>
+<body>
+  <h1>Cadastro de Materiais</h1>
+  <form id="formMateriais">
+    <label>Nome:</label><br>
+    <input type="text" name="nome" required><br><br>
+
+    <label>NCM/Código de Serviços:</label><br>
+    <input type="text" name="ncmorcodserv" required><br><br>
+
+    <label>Quantidade:</label><br>
+    <input type="text" name="qtd" id="qtd" required><br><br>
+    
+    <label>Valor:</label><br>
+    <input type="text" name="valor" id="valor" required><br><br>
+
+    <label>Alíquota (%):</label><br>
+    <input type="text" name="rate" id="rate" required><br><br>
+    
+    <label>Imposto:</label><br>
+    <input type="text" name="tax" id="tax" readonly required><br><br>
+    
+    <label>Total:</label><br>
+    <input type="text" name="total" id="total" readonly required><br><br>
+
+    <button type="submit">Salvar</button>
+  </form>
+
+  <script>
+    function calcularValores() {
+      const qtd = parseFloat(document.getElementById('qtd').value) || 0;
+      const valor = parseFloat(document.getElementById('valor').value) || 0;
+      const aliquota = parseFloat(document.getElementById('rate').value) || 0;
+
+      const imposto = qtd * valor * (aliquota / 100);
+      const total = (qtd * valor) + imposto;
+
+      document.getElementById('tax').value = imposto.toFixed(2);
+      document.getElementById('total').value = total.toFixed(2);
+    }
+
+    document.getElementById('qtd').addEventListener('input', calcularValores);
+    document.getElementById('valor').addEventListener('input', calcularValores);
+    document.getElementById('rate').addEventListener('input', calcularValores);
+
+    document.getElementById('formMateriais').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        nome: form.nome.value,
+        ncmorcodserv: form.ncmorcodserv.value,
+        quantidade: form.qtd.value,
+        valor: form.valor.value,
+        aliquota: form.rate.value,
+        tax: form.tax.value,
+        total: form.total.value
+      };
+
+      const res = await fetch('/api/materialserv', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        alert('Material/serviço salvo com sucesso!');
+        form.reset();
+      } else {
+        alert('Erro ao salvar material/serviço');
+      }
+    });
+  </script>
+</body>
+</html>
