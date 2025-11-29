@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro de Recibos</title>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 500px;
+  }
+  label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+    display: block;
+  }
+  select, input, textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fff;   /* 🔑 fundo branco */
+    color: #000;              /* 🔑 texto preto */
+  }
+  option {
+    color: #000;              /* 🔑 garante que as opções fiquem visíveis */
+    background-color: #fff;
+  }
+  textarea {
+    resize: vertical;
+  }
+  button {
+    background-color: #f4a261;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 4px;
+  }
+  button:hover {
+    background-color: #e76f51;
+  }
+</style>
+</head>
+<body>
+  <h1>Formulário de Recibo</h1>
+
+  <form id="reciboForm">
+    <div>
+      <label for="remetente">Remetente</label>
+      <select id="remetente"></select>
+    </div>
+
+    <div>
+      <label for="destinatario">Destinatário</label>
+      <select id="destinatario"></select>
+    </div>
+
+    <div>
+      <label for="materiais">Materiais / Serviços</label>
+      <select id="materiais"></select>
+    </div>
+
+    <div>
+      <label for="data">Data</label>
+      <input type="date" id="data">
+    </div>
+
+    <div>
+      <label for="observacoes">Observações</label>
+      <textarea id="observacoes" rows="4"></textarea>
+    </div>
+
+    <button type="submit">Salvar</button>
+  </form>
+
+  <script src="script.js"></script>
+</body>
+</html>

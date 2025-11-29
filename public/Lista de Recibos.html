@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Lista de Recibos</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f4a261; color: white; } /* cabeçalho laranja */
+  </style>
+</head>
+<body>
+  <h1>Recibos cadastrados</h1>
+  <table id="tabelaRecibos">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Data</th>
+        <th>Remetente</th>
+        <th>Destinatário</th>
+        <th>Materiais/Serviços</th>
+        <th>Valor Total</th>
+        <th>Observações</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function carregarRecibos() {
+      const recibos = await fetch("/api/recibos").then(r => r.json());
+      const tbody = document.querySelector("#tabelaRecibos tbody");
+
+      recibos.forEach(r => {
+        const tr = document.createElement("tr");
+
+        
+     // ✅ destaque verde-limão: número sequencial do recibo
+       const tdNumero = document.createElement("td");
+       tdNumero.textContent = r.numero;
+       tr.appendChild(tdNumero);
+
+
+        const tdData = document.createElement("td");
+        tdData.textContent = new Date(r.data).toLocaleDateString("pt-BR");
+        tr.appendChild(tdData);
+
+        const tdRemetente = document.createElement("td");
+        tdRemetente.textContent = r.remetente?.nome || "—";
+        tr.appendChild(tdRemetente);
+
+        const tdDestinatario = document.createElement("td");
+        tdDestinatario.textContent = r.destinatario?.nome || "—";
+        tr.appendChild(tdDestinatario);
+
+       const tdMateriais = document.createElement("td");
+       tdMateriais.textContent = r.materiais?.map(m => m.nome).join(", ");
+       tr.appendChild(tdMateriais);
+
+    const tdValor = document.createElement("td");
+tdValor.textContent = r.materiais?.[0] ? `R$ ${Number(r.materiais[0].total).toFixed(2)}` : "—";
+tr.appendChild(tdValor);
+
+        const tdObs = document.createElement("td");
+        tdObs.textContent = r.observacoes || "";
+        tr.appendChild(tdObs);
+
+  const tdAcoes = document.createElement("td");
+  const btnVer = document.createElement("a");
+  btnVer.textContent = "Visualizar";
+  btnVer.href = `/recibo-view.html?id=${r._id}`; // passa o ID do recibo
+  tdAcoes.appendChild(btnVer);
+  tr.appendChild(tdAcoes);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    carregarRecibos();
+  </script>
+</body>
+</html>

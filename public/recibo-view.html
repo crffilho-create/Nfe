@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Visualizar Recibo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    .recibo { border: 2px solid #000; padding: 20px; max-width: 600px; margin: auto; }
+    h2 { text-align: center; margin-bottom: 20px; }
+    .linha { margin-bottom: 8px; }
+    .total { margin-top: 15px; font-size: 18px; font-weight: bold; text-align: right; }
+    .observacoes { margin-top: 15px; font-style: italic; }
+    .acoes { text-align: center; margin-top: 20px; }
+    @media print { .acoes { display: none; } }
+  </style>
+</head>
+<body>
+  <div id="recibo" class="recibo"></div>
+  <div class="acoes">
+    <button onclick="window.print()">Imprimir / Salvar em PDF</button>
+  </div>
+
+ <script>
+  async function carregarRecibo() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    if (!id) {
+      document.getElementById("recibo").textContent = "Recibo não encontrado.";
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/recibos/${id}`);
+      if (!res.ok) {
+        const msg = await res.text();
+        document.getElementById("recibo").textContent = `Erro: ${msg}`;
+        return;
+      }
+      const r = await res.json();
+
+      document.getElementById("recibo").innerHTML = `
+        <h2>Recibo nº ${r.numero}</h2>
+        <div><strong>Data:</strong> ${new Date(r.data).toLocaleDateString("pt-BR")}</div>
+        <div><strong>Remetente:</strong> ${r.remetente?.nome || "—"}</div>
+        <div><strong>Destinatário:</strong> ${r.destinatario?.nome || "—"}</div>
+        <div><strong>Materiais/Serviços:</strong> ${r.materiais?.[0]?.nome || "—"}</div>
+        <div><strong>Valor Total:</strong> R$ ${r.materiais?.[0] ? Number(r.materiais[0].total).toFixed(2) : "0.00"}</div>
+        <div><strong>Observações:</strong> ${r.observacoes || ""}</div>
+      `;
+    } catch (err) {
+      document.getElementById("recibo").textContent = "Erro de conexão com servidor.";
+    }
+  }
+
+  // chamada da função
+  carregarRecibo();
+</script>
+
+</body>
+</html>
