@@ -18,7 +18,7 @@ router.post('/api/recibo', async (req, res) => {
     const materiaisSelecionados = await MaterialServ.find({ _id: { $in: materiaisArray } });
 const valorTotal = materiaisSelecionados.length > 0 ? Number(materiaisSelecionados[0].total) : 0;
 
-    // 🔑 Buscar último número sequencial
+    //  Buscar último número sequencial
     const ultimoRecibo = await Recibo.findOne().sort({ numero: -1 });
     const proximoNumero = ultimoRecibo ? ultimoRecibo.numero + 1 : 1;
 

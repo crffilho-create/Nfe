@@ -91,7 +91,7 @@ app.get('/api/materialserv', async (req, res) => {
   }
 });
 
-// 🟠 Rota ajustada (serve o HTML direto da pasta public)
+// (serve o HTML direto da pasta public)
 app.get('/recibo-form', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'recibo-form.html'));
 });
