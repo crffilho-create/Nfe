@@ -1,21 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path'); // ✅ mover para o topo
+const path = require('path');
+
 const app = express();
-const MaterialServ = require('./models/MaterialServ');
-const Remetente = require('./models/Remetente');
-const Destinatario = require('./models/Destinatario');
 
+// Configuração do EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-// Middleware para interpretar JSON
+// Middleware
 app.use(express.json());
-
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 // Conexão com MongoDB Atlas
 mongoose.connect(
-  'mongodb+srv://CRFFMongoDB:SenhaSegura2025@docfis2025.izrcclz.mongodb.net/?retryWrites=true&w=majority&appName=DocFis2025'
+  'mongodb+srv://CRFFMongoDB:SenhaSegura2025@docfis2025.izrcclz.mongodb.net/docfis2025?retryWrites=true&w=majority&appName=DocFis2025'
 )
 .then(() => {
   console.log('Conectado ao MongoDB Atlas');
@@ -24,28 +23,16 @@ mongoose.connect(
   console.error('Erro ao conectar ao MongoDB:', err);
 });
 
-// Modelo de dados Recibo
-const Recibo = mongoose.model('Recibo', {
-  nome: String,
-  valor: Number,
-  descricao: String,
-  data: Date
-});
+// Models
+const MaterialServ = require('./models/MaterialServ');
+const Remetente = require('./models/Remetente');
+const Destinatario = require('./models/Destinatario');
 
+// Rotas externas
+const reciboRoutes = require('./reciboServer');
+app.use(reciboRoutes);
 
-
-// Rota para salvar recibo
-app.post('/api/recibo', async (req, res) => {
-  try {
-    const novoRecibo = new Recibo(req.body);
-    await novoRecibo.save();
-    res.status(201).send('Recibo salvo com sucesso!');
-  } catch (err) {
-    res.status(500).send('Erro ao salvar recibo');
-  }
-});
-
-// Rota para salvar remetente
+// Rotas de cadastro simples
 app.post('/api/remetente', async (req, res) => {
   try {
     const novoRemetente = new Remetente(req.body);
@@ -56,7 +43,6 @@ app.post('/api/remetente', async (req, res) => {
   }
 });
 
-// Rota para listar remetente
 app.get('/api/remetentes', async (req, res) => {
   try {
     const remetentes = await Remetente.find();
@@ -66,7 +52,6 @@ app.get('/api/remetentes', async (req, res) => {
   }
 });
 
-// Rota para salvar destinatário
 app.post('/api/destinatario', async (req, res) => {
   try {
     const novoDestinatario = new Destinatario(req.body);
@@ -86,8 +71,6 @@ app.get('/api/destinatarios', async (req, res) => {
   }
 });
 
-
-// Rota para salvar MAterial
 app.post('/api/materialserv', async (req, res) => {
   try {
     const novoMaterial = new MaterialServ(req.body);
@@ -108,8 +91,10 @@ app.get('/api/materialserv', async (req, res) => {
   }
 });
 
-
-
+// 🟠 Rota ajustada (serve o HTML direto da pasta public)
+app.get('/recibo-form', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'recibo-form.html'));
+});
 
 // Rota de teste
 app.get('/', (req, res) => {
